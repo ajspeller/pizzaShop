@@ -1,0 +1,6 @@
+{
+	"appId": "com.certifyyaself.pizzashop",
+	"appName": "pizzaShop",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
