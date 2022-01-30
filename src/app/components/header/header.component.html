@@ -55,12 +55,14 @@
 
   <!-- Cart icon -->
   <ion-col class="ion-text-right" size="3">
-    <ion-button fill="clear" color="dark">
-      <ion-icon slot="icon=only" name="cart"></ion-icon>
+    <ion-button fill="clear" color="dark" #cartbtnweb>
+      <ion-icon slot="icon-only" name="cart"></ion-icon>
+      <ion-badge>{{ cartCount }}</ion-badge>
     </ion-button>
   </ion-col>
 </ion-row>
 
+<!-- Mobile-header -->
 <ion-header class="mobile-header">
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -68,8 +70,9 @@
     </ion-buttons>
     <ion-title>{{ title }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button #cartbtnmobile>
         <ion-icon slot="icon-only" name="cart"></ion-icon>
+        <ion-badge>{{ cartCount }}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

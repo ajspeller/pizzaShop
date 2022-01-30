@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import productData from './../../../assets/company/menu.json';
 import categoryData from './../../../assets/company/categories.json';
 import { Product } from 'src/app/models/product.interface';
+import { ModalController } from '@ionic/angular';
+import { FilterModalPage } from '../filter-modal/filter-modal.page';
 
 @Component({
   selector: 'app-products',
@@ -16,7 +18,8 @@ export class ProductsPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private cartService: CartService
+    private cartService: CartService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -38,5 +41,23 @@ export class ProductsPage implements OnInit {
 
   addProduct(product: Product) {
     this.cartService.addProduct(product);
+  }
+
+  async openFilter() {
+    const modal = await this.modalController.create({
+      component: FilterModalPage,
+      breakpoints: [0, 0.5],
+      initialBreakpoint: 0.5,
+      handle: false,
+      componentProps: { categories: categoryData },
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+
+    if (data) {
+      this.filterProducts(data.category?.slug);
+    }
   }
 }
