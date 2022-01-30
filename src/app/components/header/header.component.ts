@@ -1,8 +1,9 @@
-import { CartService } from 'src/app/services/cart.service';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AnimationController } from '@ionic/angular';
+import { AnimationController, ModalController } from '@ionic/angular';
 
 import categoryData from './../../../assets/company/categories.json';
+import { CartModalPage } from './../../pages/cart-modal/cart-modal.page';
+import { CartService } from 'src/app/services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -18,9 +19,14 @@ export class HeaderComponent implements OnInit {
   categories = categoryData;
   cartCount = 0;
 
+  darkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
   constructor(
     private animationController: AnimationController,
-    private cartService: CartService
+    private cartService: CartService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -30,6 +36,28 @@ export class HeaderComponent implements OnInit {
       }
       this.cartCount = value;
     });
+
+    console.log(this.darkMode);
+    this.toggleDarkmode(this.darkMode);
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    prefersDark.addEventListener('change', (e) => {
+      console.log('prefersDark eventlistener');
+      const dark = e.matches ? true : false;
+      if (this.darkMode !== dark) {
+        this.darkMode = !this.darkMode;
+        this.toggleDarkmode(this.darkMode);
+      }
+    });
+  }
+
+  toggleDarkmode(enable) {
+    document.body.classList.toggle('dark', enable);
+    console.log({
+      isDark: enable,
+      classes: document.body.classList.toString(),
+    });
+    this.darkMode = !this.darkMode;
   }
 
   hideDropdown(evt: MouseEvent) {
@@ -71,6 +99,15 @@ export class HeaderComponent implements OnInit {
       .duration(600)
       .keyframes(keyframes);
 
-      cartAnimationMobile.play();
+    cartAnimationMobile.play();
+  }
+
+  async openCart() {
+    const modal = await this.modalController.create({
+      component: CartModalPage,
+      cssClass: 'custom-modal',
+    });
+
+    await modal.present();
   }
 }
