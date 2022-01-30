@@ -4,6 +4,7 @@ import { AnimationController, ModalController } from '@ionic/angular';
 import categoryData from './../../../assets/company/categories.json';
 import { CartModalPage } from './../../pages/cart-modal/cart-modal.page';
 import { CartService } from 'src/app/services/cart.service';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'app-header',
@@ -26,10 +27,15 @@ export class HeaderComponent implements OnInit {
   constructor(
     private animationController: AnimationController,
     private cartService: CartService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private titleService: TitleService
   ) {}
 
   ngOnInit() {
+    this.titleService
+      .getCurrentTitle()
+      .subscribe((title) => (this.title = title ? title : 'All'));
+
     this.cartService.getCartCount().subscribe((value) => {
       if (value > 0) {
         this.animateCart();
@@ -37,12 +43,10 @@ export class HeaderComponent implements OnInit {
       this.cartCount = value;
     });
 
-    console.log(this.darkMode);
     this.toggleDarkmode(this.darkMode);
 
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     prefersDark.addEventListener('change', (e) => {
-      console.log('prefersDark eventlistener');
       const dark = e.matches ? true : false;
       if (this.darkMode !== dark) {
         this.darkMode = !this.darkMode;
@@ -53,10 +57,6 @@ export class HeaderComponent implements OnInit {
 
   toggleDarkmode(enable) {
     document.body.classList.toggle('dark', enable);
-    console.log({
-      isDark: enable,
-      classes: document.body.classList.toString(),
-    });
     this.darkMode = !this.darkMode;
   }
 
